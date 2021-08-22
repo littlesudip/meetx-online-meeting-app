@@ -36,11 +36,11 @@
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-lg text-light font-weight-bold display-center" style="background-color: #01796b;">Join Meeting</button>
+                    <button class="btn btn-lg text-light font-weight-bold display-center join-meeting" style="background-color: #01796b;">Join Meeting</button>
                 </li>
 
                 <li class="nav-item">
-                    <button class="btn btn-outline-secondary btn-lg text-success font-weight-bold">Create Meeting
+                    <button class="btn btn-outline-secondary btn-lg text-success font-weight-bold new-meeting">Create Meeting
                     </button>
                 </li>
             </ul>
@@ -57,20 +57,42 @@
         </p>
         <ul class="display-center justify-content-start">
             <li>
-                <button class="btn btn-lg text-light font-weight-bold display-center" style="background-color: #01796b;">
+                <button class="btn btn-lg text-light font-weight-bold display-center new-meeting" style="background-color: #01796b;">
                     <span class="material-icons">video_call</span>New Meeting</button>
             </li>
             <li class="pl-2">
                 <button class="btn btn-lg btn-outline-secondary text-dark font-weight-bold display-center" style="background-color: #ffffff;">
-                    <input type="text" placeholder="Enter meeting code"style="border:none">
+                    <input type="text" placeholder="Enter meeting code"style="border:none;" class="enter-code">
                 </button>
             </li>
-            <li class="text-dark pl-4 font-weight-bold cursor-pointer">Join</li>
+            <li class="text-dark pl-4 font-weight-bold cursor-pointer pl-2 join-action">Join</li>
         </ul>
         </div>
         <div class="container w-50">
         <img src="public/Assets/images/google-meet-people.jpg" alt="" class="signin-image">
         </div>
     </main>
+    <footer class="container"><h6>Learn more about <span
+     class="learn-more text-info">google meet</span> .</h6></footer>
+     <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script>
+         $(function(){
+             $(document).on("click",".join-meeting", function(){
+                 $(".enter-code").focus();
+             })
+             $(document).on("click",".join-action", function(){
+                 var join_value = $('.enter-code').val();
+                 var meetingUrl = window.location.origin+"?meetingID="+join_value;
+                 window.location.replace(meetingUrl);
+
+             })
+             $(document).on("click",".new-meeting", function(){
+                 var eight_d_value = Math.floor(Math.random())
+                 *100000000;
+                 var meetingUrl = window.location.origin+"?meetingID="+eight_d_value;
+                 window.location.replace(meetingUrl);
+             })
+         })
+     </script>  
 </body>
 </html>
