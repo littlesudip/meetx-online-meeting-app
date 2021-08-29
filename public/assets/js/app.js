@@ -77,8 +77,33 @@ function setOffer(connid){
   await connection.setLocalDescription(offer);
   serverProcess(JSON.stringify({
       offer: connection.localDescription,
-  }),connid)
+  }),connid);
 
+}
+async function SDPProcess(message, from_connid){
+    message = JSON.parse(message);
+    if(message.answer){
+        await peers_connection[from_connid].setRemoteDescription(new
+            RTCSessionDescription(message.answer))
+
+    }else if(message.offer){
+        if(!peers_connection[from_connid]){
+            await setConnetion(from_connid)
+        }
+        await peers_connection[from_connid].setRemoteDescription(new
+            RTCSessionDescription(message.offer))
+        var answer = await peers_connection[from_connid].createAnswer();
+        await peers_connection[from_connid].setLocalDescription(answer);
+        serverProcess(
+            JSON.stringify({
+                answer:answer,
+            }),
+            from_connid
+        );
+    }
+            
+        
+}
 }
   return{
       setNewConnetion: async function(connid){
@@ -87,6 +112,9 @@ function setOffer(connid){
       init: async function (SDP_function, my_connid) {
           await _init(SDP_function, my_connid);
       },
+      processClientFunc: async function (data, from_connid) {
+        await SDPProcess(data, from_connid);
+    },
   };
 
 
@@ -129,6 +157,9 @@ var MyApp = (function()  {
            addUser(data.other-user_id, data.connId); 
            AppProcess.setNewConnection(data.connId); 
         });
+        socket.on("SDPProcess", async function(data){
+            await AppProcess.processClientFunction(data.message,data.from_connid);
+        })
     }
     function addUser(other_user_id,connId){
         var newDivId = $("#otherTemplate").clone();
