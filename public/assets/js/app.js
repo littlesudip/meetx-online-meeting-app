@@ -14,6 +14,7 @@ var AppProcess= function () {
         ScreenShare:2
     }
     var video_st = video_states.None;
+    var videocamtrack;
 
 async function _init(SDP_function, my_connid){
     serverProcess = SDP_function;
@@ -52,12 +53,49 @@ async function _init(SDP_function, my_connid){
      })
      $("#ScreenShareOnOf").on("click",async function(){
         if (video_st == video_states.ScreenShare){
-            await videoProcess(video_states.None)
+            await videoProcess(video_states.None);
         }else{
-           await videoProcess(video_states.ScreenShare)
+           await videoProcess(video_states.ScreenShare);
         }
-    })
+    });
  }
+async function videoProcess(newVideoState){
+
+try{ 
+    var vstream = null;
+    if(newVideoState == video_states.camera){
+        vstream = await navigator.mediaDevices.getUserMedia({
+            video:{
+                width:1920,
+                height:1080
+            
+            },
+            audio:false
+        });
+    }else if(newVideoState == video_states.ScreenShare){
+        vstream = await navigator.mediaDevices.getDisplayMedia({
+            video:{
+                width:1920,
+                height:1080
+            
+            },
+            audio:false
+        });
+    }
+    if(vstream && vstream.getVideotracks().length > 0){
+        videocamtrack = vstream.getVideotracks()[0];
+        if(videocamtrack){
+            local_div.srcObject = new MediaStream([videocamtrack]);
+        }
+    }    
+
+}catch(e){
+    console.log(e);
+    return;
+}
+
+
+
    var iceConfiguration = {
        iceServers:[
            {
@@ -179,7 +217,7 @@ async function SDPProcess(message, from_connid){
   };
 
 
-})();
+}
 var MyApp = (function()  { 
 
     var socket = null;
