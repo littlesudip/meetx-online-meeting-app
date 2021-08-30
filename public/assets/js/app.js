@@ -5,7 +5,7 @@ var AppProcess= function () {
     var  remote_aud_stream = [];
 
  var serverProcess;
-function _init(SDP_function, my_connid){
+async function _init(SDP_function, my_connid){
     serverProcess = SDP_function;
     my_connection_id = my_connid;
 }
@@ -20,7 +20,7 @@ function _init(SDP_function, my_connid){
        ]
    }
 
-  function setConnetion(connid){
+async function setConnetion(connid){
    var connection = new RTCPeerConnection(iceConfiguration); 
    
    connection.onnegotiationneeded = async function(event){
@@ -100,6 +100,18 @@ async function SDPProcess(message, from_connid){
             }),
             from_connid
         );
+    }else if(message.icecandidate){
+        if(!peers_connection[from_connid]){
+            await setConnection(from_connid);
+        }
+        try{
+            await peers_connection[from_connid].addIceCandidate(
+                message.icecandidate
+            );
+        }catch(e){
+            console.log(e);
+        }
+
     }
             
         
@@ -153,10 +165,20 @@ var MyApp = (function()  {
 
         });
 
-        socket.on("inform_other_about_me", function(data){
+        socket.on("inform_others_about_me", function(data){
            addUser(data.other-user_id, data.connId); 
            AppProcess.setNewConnection(data.connId); 
         });
+        socket.on("inform_me_about_other_user", function(other_users){
+            if(other_users){
+                for(var i=0;i<other_users.length;i++){
+                    addUser(other_users[i].user_id,
+                        other_users[i].connectionId);
+                        AppProcess.setNewConnection(other_users[i].connectionId); 
+                }
+            }
+           
+         });
         socket.on("SDPProcess", async function(data){
             await AppProcess.processClientFunction(data.message,data.from_connid);
         })
