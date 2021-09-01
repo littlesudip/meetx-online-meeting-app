@@ -83,7 +83,7 @@ try{
         });
     }
     if(vstream && vstream.getVideoTracks().length > 0){
-        videocamtrack = vstream.getVideoTracks()[0];
+        videoCamtrack = vstream.getVideoTracks()[0];
         if(videoCamTrack){
             local_div.srcObject = new MediaStream([videoCamTrack]);
             alert("video cam found");
