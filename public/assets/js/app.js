@@ -1,8 +1,8 @@
-var AppProcess= function () {
-    var  peers_conection_ids = [];
+var AppProcess= (function () {
+    var peers_conection_ids = [];
     var peers_conection = [];
-    var  remote_vid_stream = [];
-    var  remote_aud_stream = [];
+    var remote_vid_stream = [];
+    var remote_aud_stream = [];
     var local_div;
     var serverProcess;
     var audio;
@@ -11,10 +11,10 @@ var AppProcess= function () {
     var video_states = {
         None:0,
         Camera: 1,
-        ScreenShare:2
-    }
+        ScreenShare: 2,
+    };
     var video_st = video_states.None;
-    var videocamtrack;
+    var videoCamTrack;
 
 async function _init(SDP_function, my_connid){
     serverProcess = SDP_function;
@@ -63,7 +63,7 @@ async function videoProcess(newVideoState){
 
 try{ 
     var vstream = null;
-    if(newVideoState == video_states.camera){
+    if(newVideoState == video_states.Camera){
         vstream = await navigator.mediaDevices.getUserMedia({
             video:{
                 width:1920,
@@ -82,10 +82,11 @@ try{
             audio:false
         });
     }
-    if(vstream && vstream.getVideotracks().length > 0){
-        videocamtrack = vstream.getVideotracks()[0];
-        if(videocamtrack){
-            local_div.srcObject = new MediaStream([videocamtrack]);
+    if(vstream && vstream.getVideoTracks().length > 0){
+        videocamtrack = vstream.getVideoTracks()[0];
+        if(videoCamTrack){
+            local_div.srcObject = new MediaStream([videoCamTrack]);
+            alert("video cam found");
         }
     }    
 
@@ -158,7 +159,7 @@ async function setConnetion(connid){
   return connection;
 }
 
-function setOffer(connid){
+async function setOffer(connid){
   var connection = peers_connection[connid];
   var offer = await connection.createOffer();
   await connection.setLocalDescription(offer);
@@ -217,7 +218,7 @@ async function SDPProcess(message, from_connid){
   };
 
 
-}
+})();
 var MyApp = (function()  { 
 
     var socket = null;
@@ -225,7 +226,10 @@ var MyApp = (function()  {
     var meeting_id = "";
     function init (uid,mid){
         user_id = uid;
-        meeting_id = "";
+        meeting_id = mid;
+        $("#meetingContainer").show();
+        $("#me h2").text(user_id + "(Me)");
+        document.title=user_id;
         event_process_for_signaling_server();
     }
     var socket=null;
