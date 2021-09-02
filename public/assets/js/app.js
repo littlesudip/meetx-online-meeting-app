@@ -20,10 +20,10 @@ async function _init(SDP_function, my_connid){
     serverProcess = SDP_function;
     my_connection_id = my_connid;
     eventProcess();
-    local_div = document.getElementById("localVideoPlayer");
+    local_div = document.getElementById("locaVideoPlayer");
 }
  function eventProcess(){
-     $("#micMuteUnmute").on("click", async function(){
+     $("#miceMuteUnmute").on("click", async function(){
          if(!audio){
              await loadAudio();
          }
@@ -43,8 +43,9 @@ async function _init(SDP_function, my_connid){
         isAudioMute = !isAudioMute;
         
      });
+    
 
-     $("#videoCamONOff").on("click",async function(){
+     $("#videoCamOnOff").on("click",async function(){
          if (video_st == video_states.camera){
              await videoProcess(video_states.None)
          }else{
