@@ -1,6 +1,6 @@
 var AppProcess= (function () {
-    var peers_conection_ids = [];
-    var peers_conection = [];
+    var peers_connection_ids = [];
+    var peers_connection = [];
     var remote_vid_stream = [];
     var remote_aud_stream = [];
     var local_div;
