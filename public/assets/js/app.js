@@ -59,7 +59,30 @@ async function _init(SDP_function, my_connid){
            await videoProcess(video_states.ScreenShare);
         }
     });
+ }   
+function connection_status(connection){
+    if(connection && (connection.connectionState == "new" ||connection.connectionState == "connecting"
+    || connection.connectionState == "connected" )){
+        return true;
+    }
+    else {
+        return false;
+    }
  }
+async function updateMediaSenders(track,rtp_senders){
+    for(var con_id in peers_connection_ids){
+        if(connection_status(peers_connection[con_id])){
+            if(rtp_senders[con_id] && rtp_senders[con_id].track){
+                rtp_senders[con_id].replaceTrack(track)
+            }
+            else{
+                rtp_senders[con_id] = peers_connection[con_id].addTrack(track);
+            }
+
+        }
+    }
+}
+
 async function videoProcess(newVideoState){
 
 try{ 
