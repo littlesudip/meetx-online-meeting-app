@@ -15,7 +15,7 @@ var AppProcess= (function () {
     };
     var video_st = video_states.None;
     var videoCamTrack;
-
+    var rtp_vid_senders = [];
 async function _init(SDP_function, my_connid){
     serverProcess = SDP_function;
     my_connection_id = my_connid;
@@ -84,17 +84,17 @@ try{
         });
     }
     if(vstream && vstream.getVideoTracks().length > 0){
-        videoCamtrack = vstream.getVideoTracks()[0];
+        videoCamTrack = vstream.getVideoTracks()[0];
         if(videoCamTrack){
             local_div.srcObject = new MediaStream([videoCamTrack]);
-            alert("video cam found");
-        }
-    }    
-
-}catch(e){
+            updateMediaSenders(videoCamTrack , rtp_vid_senders);
+            }
+        }    
+    }
+catch(e){
     console.log(e);
     return;
-}
+    }
 
 
 
@@ -109,7 +109,7 @@ try{
        ]
    }
 
-async function setConnetion(connid){
+async function setConnection(connid){
    var connection = new RTCPeerConnection(iceConfiguration); 
    
    connection.onnegotiationneeded = async function(event){
@@ -134,7 +134,7 @@ async function setConnetion(connid){
 
     if (event.track.kind == "video"){
         remote_vid_stream[connid]
-        .getVideotracks()
+        .getVideoTracks()
         .forEach((t)=>remote_vid_stream[connid].removeTrack(t));
         remote_vid_stream[connid].addTrack(event.track);
         var remoteVideoPlayer = document.getElementById("v_"+connid);
@@ -144,7 +144,7 @@ async function setConnetion(connid){
 
     }else if(event.track.kind == "audio"){
         remote_aud_stream[connid]
-        .getAudiotracks()
+        .getAudioTracks()
         .forEach((t)=>remote_aud_stream[connid].removeTrack(t));
         remote_aud_stream[connid].addTrack(event.track);
         var remoteAudioPlayer = document.getElementById("a_"+connid);
@@ -153,13 +153,16 @@ async function setConnetion(connid){
         remoteAudioPlayerr.load();
 
     }
-
   };
-   peers_conection_ids[connid] = connid;
-   peers_conection[connid] = connection;
+  peers_connection_ids[connid] = connid;
+  peers_connection[connid] = connection;
+  if(video_st == video_states.Camera || video_st == video_states.ScreenShare){
+      if(videoCamTrack){
+      updateMediaSenders(videoCamTrack, rtp_vid_senders);
+      }
+  }
   return connection;
 }
-
 async function setOffer(connid){
   var connection = peers_connection[connid];
   var offer = await connection.createOffer();
@@ -177,7 +180,7 @@ async function SDPProcess(message, from_connid){
 
     }else if(message.offer){
         if(!peers_connection[from_connid]){
-            await setConnetion(from_connid)
+            await setConnection(from_connid)
         }
         await peers_connection[from_connid].setRemoteDescription(new
             RTCSessionDescription(message.offer))
@@ -207,8 +210,8 @@ async function SDPProcess(message, from_connid){
 }
 }
   return{
-      setNewConnetion: async function(connid){
-          await setConnetion(connid);
+      setNewConnection: async function(connid){
+          await setConnection(connid);
       },
       init: async function (SDP_function, my_connid) {
           await _init(SDP_function, my_connid);
@@ -258,19 +261,17 @@ var MyApp = (function()  {
         });
 
         socket.on("inform_others_about_me", function(data){
-           addUser(data.other-user_id, data.connId); 
+           addUser(data.other_user_id, data.connId); 
            AppProcess.setNewConnection(data.connId); 
         });
         socket.on("inform_me_about_other_user", function(other_users){
             if(other_users){
                 for(var i=0;i<other_users.length;i++){
-                    addUser(other_users[i].user_id,
-                        other_users[i].connectionId);
+                    addUser(other_users[i].user_id,other_users[i].connectionId);
                         AppProcess.setNewConnection(other_users[i].connectionId); 
                 }
             }
-           
-         });
+        });
         socket.on("SDPProcess", async function(data){
             await AppProcess.processClientFunction(data.message,data.from_connid);
         })
