@@ -84,6 +84,8 @@ async function _init(SDP_function, my_connid) {
               rtp_senders[con_id] = peers_connection[con_id].addTrack(track);
             }
           }
+        }
+      }
 
 
 async function videoProcess(newVideoState) {
@@ -237,8 +239,6 @@ async function SDPProcess(message, from_connid) {
         await SDPProcess(data, from_connid);
     },
   };
-
-
 })();
 var MyApp = (function () { 
 
