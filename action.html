@@ -65,19 +65,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function(){
-            $(document).on("click",".join-meeting", function(){
+            $(document).on("click", ".join-meeting", function(){
                 $(".enter-code").focus();
             })
-            $(document).on("click",".join-action", function(){
+            $(document).on("click", ".join-action", function(){
                 var join_value = $('.enter-code').val();
                 var meetingUrl = window.location.origin+"?meetingID="+join_value;
                 window.location.replace(meetingUrl);
 
             })
             
-            $(document).on("click",".new-meeting", function(){
-                var eight_d_value = Math.floor(Math.random()
-                *100000000);
+            $(document).on("click", ".new-meeting", function(){
+               var eight_d_value = Math.floor(Math.random()*100000000);
                 var meetingUrl = window.location.origin+"?meetingID="+eight_d_value;
                 window.location.replace(meetingUrl);
             })
