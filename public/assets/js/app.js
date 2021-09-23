@@ -157,7 +157,7 @@ async function videoProcess(newVideoState) {
       } else if (event.track.kind == "audio") {
       remote_aud_stream[connid]
       .getAudioTracks()
-      var remoteAudioPlayer = document.getElementById("a_" + connid);
+      .forEach((t) => remote_aud_stream[connid].removeTrack(t));
     remote_aud_stream[connid].addTrack(event.track);
     var remoteAudioPlayer = document.getElementById("a_" + connid);
     remoteAudioPlayer.srcObject = null;
@@ -224,39 +224,38 @@ async function SDPProcess(message, from_connid) {
         }
 
     }
-            
-        
-}
-}
-  return {
+  }
+    return {
       setNewConnection: async function (connid) {
-          await setConnection(connid);
+        await setConnection(connid);
       },
       init: async function (SDP_function, my_connid) {
-          await _init(SDP_function, my_connid);
+        await _init(SDP_function, my_connid);
       },
       processClientFunc: async function (data, from_connid) {
         await SDPProcess(data, from_connid);
-    },
-  };
-})();
-var MyApp = (function () { 
+      },
+      closeConnectionCall: async function (connid) {
+        await closeConnection(connid);
+      },
+    };
+  })();
+var MyApp = (function () {
+  var socket = null;
+  var user_id = "";
+  var meeting_id = "";
+  function init(uid, mid) {
+    user_id = uid;
+    meeting_id = mid;
+    $("#meetingContainer").show();
+    $("#me h2").text(user_id + "(Me)");
+    document.title = user_id;
+    event_process_for_signaling_server();
+    eventHandeling();
+  }
 
-    var socket = null;
-    var user_id = "";
-    var meeting_id = "";
-    function init(uid, mid) {
-        user_id = uid;
-        meeting_id = mid;
-        $("#meetingContainer").show();
-        $("#me h2").text(user_id + "(Me)");
-        document.title = user_id;
-        event_process_for_signaling_server(); 
-        eventHandeling();
-    }
-
-    function event_process_for_signaling_server() {
-        socket = io.connect();
+  function event_process_for_signaling_server() {
+    socket = io.connect();
 
     var SDP_function = function (data, to_connid) {
       socket.emit("SDPProcess", {
@@ -274,37 +273,39 @@ var MyApp = (function () {
           });
         }
       }
-            
-
         });
-
         socket.on("inform_others_about_me", function (data) {
           addUser(data.other_user_id, data.connId, data.userNumber);
 
           AppProcess.setNewConnection(data.connId);
         });
 
-        socket.on("inform_me_about_other_user", function(other_users){
-            if(other_users){
-                for(var i=0;i<other_users.length;i++){
-                    addUser(other_users[i].user_id,
-                      other_users[i].connectionId);
-                        AppProcess.setNewConnection(other_users[i].connectionId); 
-                }
+        socket.on("inform_me_about_other_user", function (other_users) {
+          var userNumber = other_users.length;
+          var userNumb = userNumber + 1;
+          if (other_users) {
+            for (var i = 0; i < other_users.length; i++) {
+              addUser(
+                other_users[i].user_id,
+                other_users[i].connectionId,
+                userNumb
+              );
+              AppProcess.setNewConnection(other_users[i].connectionId);
             }
+          }
         });
         socket.on("SDPProcess", async function (data) {
             await AppProcess.processClientFunc(data.message, data.from_connid);
           });
     }
     function addUser(other_user_id, connId, userNum) {
-        var newDivId = $("#otherTemplate").clone();
-        newDivId = newDivId.attr("id", connId).addClass("other");
-        newDivId.find("h2").text(other_user_id);
-        newDivId.find("video").attr("id", "v_" + connId);
-        newDivId.find("audio").attr("id", "a_" + connId);
-        newDivId.show();
-        $("#divUsers").append(newDivId);
+      var newDivId = $("#otherTemplate").clone();
+      newDivId = newDivId.attr("id", connId).addClass("other");
+      newDivId.find("h2").text(other_user_id);
+      newDivId.find("video").attr("id", "v_" + connId);
+      newDivId.find("audio").attr("id", "a_" + connId);
+      newDivId.show();
+      $("#divUsers").append(newDivId);
     }
 
 
