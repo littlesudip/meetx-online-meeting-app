@@ -86,9 +86,43 @@ async function _init(SDP_function, my_connid) {
           }
         }
       }
+function removeMediaSenders(rtp_senders){
+  for(var con_id in peers_connection_ids){
+    if(rtp_senders[con_id] && connection_status(peers_connection[con_id]))
+    {
+      peers_connection[con-id].removeTrack(rtp_senders[con-id]);
+      rtp_senders[con-id] = null;
+    }
+  }
 
-
+}      
+function removeVideoStream(){
+  if(videoCamTrack){
+    videoCamTrack.stop();
+    videoCamTrack = null;
+    local_div.srcObject = null;
+    removeMediaSenders(rtp_vid_senders);
+  }
+}
+        
 async function videoProcess(newVideoState) {
+   if(newVideoState==video_states.None){ 
+      $("#videoCamOnOff").html(
+        
+        "<span class ='material-icons' style='width:100%;'>videocam_off</span>"
+      ); 
+      
+      video_st = newVideoState;
+
+      removeVideoStream(rtp_vid_senders);
+      return;
+   }
+   if(newVideoState==video_states.Camera){ 
+    $("#videoCamOnOff").html(
+      
+      "<span class ='material-icons'style='width:100%;'>videocam_on</span>"
+    );
+    }  
 	try {
       var vstream = null;
       if (newVideoState == video_states.Camera) {
