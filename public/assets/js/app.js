@@ -110,7 +110,11 @@ async function videoProcess(newVideoState) {
       $("#videoCamOnOff").html(
         
         "<span class ='material-icons' style='width:100%;'>videocam_off</span>"
-      ); 
+      );
+      $("#ScreenShareOnOf").html('<span class="material-icons">present_to_all</span><div>Present Now</div');
+      
+   
+        
       
       video_st = newVideoState;
 
@@ -141,10 +145,35 @@ async function videoProcess(newVideoState) {
           },
           audio: false,
         });
+        vstream.oninactive = (e) =>{
+          removeVideoStream(rtp_vid_senders);
+          $("# ScreenShareOnOf").html('<span class="material-icons text-success">present_to_all</span><div class="text-success"> Present Now</div');
+        }
       }
+    }if(vstream && vstream.getVideoTracks().length > 0){
+    videoCamTrack = vstream.getVideoTracks()[0];
+    if (videoCamTrack) {
+      local_div.srcObject = new MediaStream([videoCamTrack]);
+      updateMediaSenders(videoCamTrack, rtp_vid_senders);
     }
-  }
-           var iceConfiguration = {
+  };
+ } catch (e) {
+  console.log(e);
+  return;
+
+}
+video_st = newVideoState;
+if(newVideoState == video_states.Camera){
+  $("#videoCamOnOff").html('<span class ="material-icons"style="width:100%;">videocam</span>');
+  $("# ScreenShareOnOf").html('<span class="material-icons text-success">present_to_all</span><div class="text-success"> Present Now</div');
+    }else if(newVideoState == video_states.ScreenShare){
+      $("#videoCamOnOff").html('<span class ="material-icons"style="width:100%;">videocam_off</span>');
+      
+  $("#ScreenShareOnOf").html('<span class="material-icons text-success">present_to_all</span><div class="text-success"> Stop Present Now</div');
+    }
+   
+ 
+ var iceConfiguration = {
                iceServers: [
            {
                urls: "stun:stun.l.google.com:19302",
