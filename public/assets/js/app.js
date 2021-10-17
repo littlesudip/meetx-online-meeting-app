@@ -389,7 +389,11 @@ var MyApp = (function () {
 
           AppProcess.setNewConnection(data.connId);
         });
-
+        socket.on("showFileMessage", function (data) {
+          var num_of_att = $(".left-align").length;
+          var added_mar = num_of_att * 10;
+          var mar_top = "-" + (135 + added_mar);
+          $(".g-details").css({ "margin-top": mar_top });
         socket.on("inform_me_about_other_user", function (other_users) {
              
           var userNumber = other_users.length;
