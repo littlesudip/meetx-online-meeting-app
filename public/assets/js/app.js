@@ -394,7 +394,25 @@ var MyApp = (function () {
           var added_mar = num_of_att * 10;
           var mar_top = "-" + (135 + added_mar);
           $(".g-details").css({ "margin-top": mar_top });
-        socket.on("inform_me_about_other_user", function (other_users) {
+
+          var time = new Date();
+          var lTime = time.toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
+          var attachFileAreaForOther = document.querySelector(".show-attach-file");
+    
+          attachFileAreaForOther.innerHTML +=
+            "<div class='left-align' style='display:flex; align-items:center;'><img src='public/assets/images/other.jpg' style='height:40px;width:40px;' class='caller-image circle'><div style='font-weight:600;margin:0 5px;'>" +
+            data.username +
+            "</div>:<div><a style='color:#007bff;' href='" +
+            data.filePath +
+            "' download>" +
+            data.fileName +
+            "</a></div></div><br/>";
+        });
+                  socket.on("inform_me_about_other_user", function (other_users) {
              
           var userNumber = other_users.length;
 
