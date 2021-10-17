@@ -447,7 +447,36 @@ var MyApp = (function () {
             );
             $("#messages").append(div);
           });
+        }  function eventHandeling() {
+          $("#btnsend").on("click", function () {
+            var msgData = $("#msgbox").val();
+            socket.emit("sendMessage", msgData);
+            var time = new Date();
+            var lTime = time.toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+              hour12: true,
+            });
+            var div = $("<div>").html(
+              "<span class='font-weight-bold mr-3' style='color:black'>" +
+                user_id +
+                "</span>" +
+                lTime +
+                "</br>" +
+                msgData
+            );
+            $("#messages").append(div);
+            $("#msgbox").val("");
+          });
+      
+          var url = window.location.href;
+          $(".meeting_url").text(url);
+      
+          $("#divUsers").on("dblclick", "video", function () {
+            this.requestFullscreen();
+          });
         }
+
     function addUser(other_user_id, connId, userNum) {
       var newDivId = $("#otherTemplate").clone();
       newDivId = newDivId.attr("id", connId).addClass("other");
