@@ -369,7 +369,9 @@ var MyApp = (function () {
         });
 
         socket.on("inform_me_about_other_user", function (other_users) {
+             
           var userNumber = other_users.length;
+
           var userNumb = userNumber + 1;
           if (other_users) {
             for (var i = 0; i < other_users.length; i++) {
@@ -394,12 +396,21 @@ var MyApp = (function () {
       newDivId.find("audio").attr("id", "a_" + connId);
       newDivId.show();
       $("#divUsers").append(newDivId);
+      $(".in-call-wrap-up").append("");
     }
 
-
+   $(document).on("click",".people-heading",function(){
+     $(".chat-show-wrap").hide(300);
+     $(".in-call-wrap-up").show(300);
+   })
+   $(document).on("click",".people-heading",function(){
+    $(".chat-show-wrap").hide(300);
+    $(".in-call-wrap-up").show(300);
+  })
   return {
     _init: function (uid, mid) {
       init(uid, mid);
         },
     };
 })();
+
