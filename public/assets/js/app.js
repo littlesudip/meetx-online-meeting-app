@@ -378,10 +378,12 @@ var MyApp = (function () {
         }
       }
         });
-        socket.on("inform_other_about_disconnected_user",function(data){
-          $("#"+data.connId).remove();
+        socket.on("inform_other_about_disconnected_user", function (data) {
+          $("#" + data.connId).remove();
+          $(".participant-count").text(data.uNumber);
+          $("#participant_" + data.connId + "").remove();
           AppProcess.closeConnectionCall(data.connId);
-        })
+        });
         socket.on("inform_others_about_me", function (data) {
           addUser(data.other_user_id, data.connId, data.userNumber);
 
