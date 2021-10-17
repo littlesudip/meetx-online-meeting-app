@@ -131,11 +131,10 @@ async function videoProcess(newVideoState) {
       removeVideoStream(rtp_vid_senders);
       return;
    }
-   if(newVideoState==video_states.Camera){ 
-    $("#videoCamOnOff").html(
-      
-      "<span class ='material-icons'style='width:100%;'>videocam_on</span>"
-    );
+   if (newVideoState == video_states.Camera) {
+      $("#videoCamOnOff").html(
+        "<span class='material-icons' style='width:100%;'>videocam_on</span>"
+      );
     }  
 	try {
       var vstream = null;
@@ -155,32 +154,42 @@ async function videoProcess(newVideoState) {
           },
           audio: false,
         });
-        vstream.oninactive = (e) =>{
+        vstream.oninactive = (e) => {
           removeVideoStream(rtp_vid_senders);
-          $("# ScreenShareOnOf").html('<span class="material-icons text-success">present_to_all</span><div class="text-success"> Present Now</div');
+          $("#ScreenShareOnOf").html(
+            '<span class="material-icons ">present_to_all</span><div >Present Now</div>'
+          );
+        };
+      }
+      if (vstream && vstream.getVideoTracks().length > 0) {
+        videoCamTrack = vstream.getVideoTracks()[0];
+        if (videoCamTrack) {
+          local_div.srcObject = new MediaStream([videoCamTrack]);
+          updateMediaSenders(videoCamTrack, rtp_vid_senders);
         }
       }
-    }if(vstream && vstream.getVideoTracks().length > 0){
-    videoCamTrack = vstream.getVideoTracks()[0];
-    if (videoCamTrack) {
-      local_div.srcObject = new MediaStream([videoCamTrack]);
-      updateMediaSenders(videoCamTrack, rtp_vid_senders);
-    }
-  };
  } catch (e) {
   console.log(e);
   return;
 
 }
 video_st = newVideoState;
-if(newVideoState == video_states.Camera){
-  $("#videoCamOnOff").html('<span class ="material-icons"style="width:100%;">videocam</span>');
-  $("# ScreenShareOnOf").html('<span class="material-icons text-success">present_to_all</span><div class="text-success"> Present Now</div');
-    }else if(newVideoState == video_states.ScreenShare){
-      $("#videoCamOnOff").html('<span class ="material-icons"style="width:100%;">videocam_off</span>');
-      
-  $("#ScreenShareOnOf").html('<span class="material-icons text-success">present_to_all</span><div class="text-success"> Stop Present Now</div');
-    }
+if (newVideoState == video_states.Camera) {
+  $("#videoCamOnOff").html(
+    '<span class="material-icons" style="width: 100%;">videocam</span>'
+  );
+  $("#ScreenShareOnOf").html(
+    '<span class="material-icons ">present_to_all</span><div >Present Now</div>'
+  );
+} else if (newVideoState == video_states.ScreenShare) {
+  $("#videoCamOnOff").html(
+    '<span class="material-icons" style="width: 100%;">videocam_off</span>'
+  );
+  $("#ScreenShareOnOf").html(
+    '<span class="material-icons text-success">present_to_all</span><div class="text-success">Stop Present Now</div>'
+  );
+}
+}
    
  
  var iceConfiguration = {
