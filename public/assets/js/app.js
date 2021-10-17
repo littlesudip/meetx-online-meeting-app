@@ -307,24 +307,25 @@ async function SDPProcess(message, from_connid) {
 
     }
   }
-     async function closeConnection(connid){
-       peers_connection_ids[connid]=null;
-       if(peers_connection[connid]){
-         peers_connection[connid].close();
-         peers_connection[connid]= null;
-       }
-       if(remote_aud_stream[connid]){
-         remote_aud_stream[connid].getTrack().forEach((t)=>{
-           if(t.stop) t.stop();
-         })
-         remote_aud_stream[connid] = null;
-       }
-       if(remote_vid_stream[connid]){
-        remote_vid_stream[connid].getTrack().forEach((t)=>{
-          if(t.stop) t.stop();
-        })
-        remote_vid_stream[connid] = null;
-      }
+  async function closeConnection(connid) {
+    peers_connection_ids[connid] = null;
+    if (peers_connection[connid]) {
+      peers_connection[connid].close();
+      peers_connection[connid] = null;
+    }
+    if (remote_aud_stream[connid]) {
+      remote_aud_stream[connid].getTracks().forEach((t) => {
+        if (t.stop) t.stop();
+      });
+      remote_aud_stream[connid] = null;
+    }
+    if (remote_vid_stream[connid]) {
+      remote_vid_stream[connid].getTracks().forEach((t) => {
+        if (t.stop) t.stop();
+      });
+      remote_vid_stream[connid] = null;
+    }
+
 
      }
     return {
