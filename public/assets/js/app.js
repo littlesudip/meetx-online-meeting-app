@@ -63,6 +63,19 @@ async function _init(SDP_function, my_connid) {
         }
       });
     }
+    async function loadAudio() {
+      try {
+        var astream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: true,
+        });
+        audio = astream.getAudioTracks()[0];
+        audio.enabled = false;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  
     function connection_status(connection) {
         if (
           connection &&
@@ -86,35 +99,32 @@ async function _init(SDP_function, my_connid) {
           }
         }
       }
-function removeMediaSenders(rtp_senders){
-  for(var con_id in peers_connection_ids){
-    if(rtp_senders[con_id] && connection_status(peers_connection[con_id]))
-    {
-      peers_connection[con-id].removeTrack(rtp_senders[con-id]);
-      rtp_senders[con-id] = null;
+      function removeMediaSenders(rtp_senders) {
+        for (var con_id in peers_connection_ids) {
+          if (rtp_senders[con_id] && connection_status(peers_connection[con_id])) {
+            peers_connection[con_id].removeTrack(rtp_senders[con_id]);
+            rtp_senders[con_id] = null;
     }
   }
 
 }      
-function removeVideoStream(){
-  if(videoCamTrack){
+function removeVideoStream(rtp_vid_senders) {
+  if (videoCamTrack) {
     videoCamTrack.stop();
     videoCamTrack = null;
     local_div.srcObject = null;
     removeMediaSenders(rtp_vid_senders);
   }
 }
-        
 async function videoProcess(newVideoState) {
-   if(newVideoState==video_states.None){ 
-      $("#videoCamOnOff").html(
-        
-        "<span class ='material-icons' style='width:100%;'>videocam_off</span>"
-      );
-      $("#ScreenShareOnOf").html('<span class="material-icons">present_to_all</span><div>Present Now</div');
-      
-   
-        
+  if (newVideoState == video_states.None) {
+    $("#videoCamOnOff").html(
+      "<span class='material-icons' style='width:100%;'>videocam_off</span>"
+    );
+    $("#ScreenShareOnOf").html(
+      '<span class="material-icons">present_to_all</span><div>Present Now</div>'
+    );
+
       
       video_st = newVideoState;
 
