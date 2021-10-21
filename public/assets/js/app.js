@@ -44,10 +44,8 @@ async function _init(SDP_function, my_connid) {
         );
             removeMediaSenders(rtp_aud_senders);
         }
-        isAudioMute = !isAudioMute;
-        
+        isAudioMute = !isAudioMute;  
      });
-    
      $("#videoCamOnOff").on("click", async function () {
         if (video_st == video_states.Camera) {
           await videoProcess(video_states.None);
@@ -106,7 +104,6 @@ async function _init(SDP_function, my_connid) {
             rtp_senders[con_id] = null;
     }
   }
-
 }      
 function removeVideoStream(rtp_vid_senders) {
   if (videoCamTrack) {
@@ -124,8 +121,6 @@ async function videoProcess(newVideoState) {
     $("#ScreenShareOnOf").html(
       '<span class="material-icons">present_to_all</span><div>Present Now</div>'
     );
-
-      
       video_st = newVideoState;
 
       removeVideoStream(rtp_vid_senders);
@@ -171,7 +166,6 @@ async function videoProcess(newVideoState) {
  } catch (e) {
   console.log(e);
   return;
-
 }
 video_st = newVideoState;
 if (newVideoState == video_states.Camera) {
@@ -190,8 +184,6 @@ if (newVideoState == video_states.Camera) {
   );
 }
 }
-   
- 
  var iceConfiguration = {
                iceServers: [
            {
@@ -217,7 +209,6 @@ if (newVideoState == video_states.Camera) {
            );
        }
    };
-
    connection.ontrack = function (event) {
     if (!remote_vid_stream[connid]) {
           remote_vid_stream[connid] = new MediaStream();
@@ -235,7 +226,6 @@ if (newVideoState == video_states.Camera) {
         remoteVideoPlayer.srcObject = null;
         remoteVideoPlayer.srcObject = remote_vid_stream[connid];
         remoteVideoPlayer.load();
-
       } else if (event.track.kind == "audio") {
       remote_aud_stream[connid]
       .getAudioTracks()
@@ -258,6 +248,7 @@ if (newVideoState == video_states.Camera) {
       updateMediaSenders(videoCamTrack, rtp_vid_senders);
     }
   }
+
   return connection;
 }
 
@@ -412,10 +403,8 @@ var MyApp = (function () {
             data.fileName +
             "</a></div></div><br/>";
         });
-                  socket.on("inform_me_about_other_user", function (other_users) {
-             
+                  socket.on("inform_me_about_other_user", function (other_users) {         
           var userNumber = other_users.length;
-
           var userNumb = userNumber + 1;
           if (other_users) {
             for (var i = 0; i < other_users.length; i++) {
@@ -430,7 +419,8 @@ var MyApp = (function () {
         });
         socket.on("SDPProcess", async function (data) {
             await AppProcess.processClientFunc(data.message, data.from_connid);
-          });    socket.on("showChatMessage", function (data) {
+          });    
+          socket.on("showChatMessage", function (data) {
             var time = new Date();
             var lTime = time.toLocaleString("en-US", {
               hour: "numeric",
@@ -447,7 +437,8 @@ var MyApp = (function () {
             );
             $("#messages").append(div);
           });
-        }  function eventHandeling() {
+        }  
+        function eventHandeling() {
           $("#btnsend").on("click", function () {
             var msgData = $("#msgbox").val();
             socket.emit("sendMessage", msgData);
@@ -485,7 +476,14 @@ var MyApp = (function () {
       newDivId.find("audio").attr("id", "a_" + connId);
       newDivId.show();
       $("#divUsers").append(newDivId);
-      $(".in-call-wrap-up").append("");
+      $(".in-call-wrap-up").append(
+        '<div class="in-call-wrap d-flex justify-content-between align-items-center mb-3" id="participant_' +
+          connId +
+          '"> <div class="participant-img-name-wrap display-center cursor-pointer"> <div class="participant-img"> <img src="public/Assets/images/other.jpg" alt="" class="border border-secondary" style="height: 40px;width: 40px;border-radius: 50%;"> </div> <div class="participant-name ml-2"> ' +
+          other_user_id +
+          '</div> </div> <div class="participant-action-wrap display-center"> <div class="participant-action-dot display-center mr-2 cursor-pointer"> <span class="material-icons"> more_vert </span> </div> <div class="participant-action-pin display-center mr-2 cursor-pointer"> <span class="material-icons"> push_pin </span> </div> </div> </div>'
+      );
+      $(".participant-count").text(userNum);
     }
 
    $(document).on("click",".people-heading",function(){
