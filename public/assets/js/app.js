@@ -486,13 +486,35 @@ var MyApp = (function () {
       $(".chat-show-wrap").hide(300);
       $(this).addClass("active");
       $(".chat-heading").removeClass("active");
-    });     
-    $(".in-call-wrap-up").show(300);
-   })
-   $(document).on("click",".people-heading",function(){
-    $(".chat-show-wrap").hide(300);
-    $(".in-call-wrap-up").show(300);
-  })
+    });   
+    $(document).on("click", ".chat-heading", function () {
+      $(".in-call-wrap-up").hide(300);
+      $(".chat-show-wrap").show(300);
+      $(this).addClass("active");
+      $(".people-heading").removeClass("active");
+    });
+    $(document).on("click", ".meeting-heading-cross", function () {
+      $(".g-right-details-wrap").hide(300);
+    });
+    $(document).on("click", ".top-left-participant-wrap", function () {
+      $(".people-heading").addClass("active");
+      $(".chat-heading").removeClass("active");
+      $(".g-right-details-wrap").show(300);
+      $(".in-call-wrap-up").show(300);
+      $(".chat-show-wrap").hide(300);
+    });
+    $(document).on("click", ".top-left-chat-wrap", function () {
+      $(".people-heading").removeClass("active");
+      $(".chat-heading").addClass("active");
+      $(".g-right-details-wrap").show(300);
+      $(".in-call-wrap-up").hide(300);
+      $(".chat-show-wrap").show(300);
+    });
+    $(document).on("click", ".end-call-wrap", function () {
+      $(".top-box-show")
+        .css({
+          display: "block",
+        })  
   return {
     _init: function (uid, mid) {
       init(uid, mid);
