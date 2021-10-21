@@ -573,6 +573,30 @@ var MyApp = (function () {
       var fileName = $(this).val().split("\\").pop();
       $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
+
+    $(document).on("click", ".share-attach", function (e) {
+      e.preventDefault();
+      var att_img = $("#customFile").prop("files")[0];
+      var formData = new FormData();
+      formData.append("zipfile", att_img);
+      formData.append("meeting_id", meeting_id);
+      formData.append("username", user_id);
+      console.log(formData);
+      $.ajax({
+        url: base_url + "/attachimg",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+          console.log(response);
+        },
+        error: function () {
+          console.log("error");
+        },
+      });
+  
+
     return {
     _init: function (uid, mid) {
       init(uid, mid);
