@@ -552,22 +552,6 @@ var MyApp = (function () {
         $(".link-conf").hide();
       }, 3000);
     });
-    $(document).on("click", ".meeting-details-button", function () {
-      $(".g-details").slideDown(300);
-    });
-    $(document).on("click", ".g-details-heading-attachment", function () {
-      $(".g-details-heading-show").hide();
-      $(".g-details-heading-show-attachment").show();
-      $(this).addClass("active");
-      $(".g-details-heading-detail").removeClass("active");
-    });
-    $(document).on("click", ".g-details-heading-detail", function () {
-      $(".g-details-heading-show").show();
-      $(".g-details-heading-show-attachment").hide();
-      $(this).addClass("active");
-      $(".g-details-heading-attachment").removeClass("active");
-    });
-    var base_url = window.location.origin;
     
   return {
     _init: function (uid, mid) {
