@@ -295,7 +295,6 @@ async function SDPProcess(message, from_connid) {
         } catch (e) {
             console.log(e);
         }
-
     }
   }
   async function closeConnection(connid) {
@@ -316,8 +315,6 @@ async function SDPProcess(message, from_connid) {
       });
       remote_vid_stream[connid] = null;
     }
-
-
      }
     return {
       setNewConnection: async function (connid) {
@@ -328,8 +325,7 @@ async function SDPProcess(message, from_connid) {
       },
       processClientFunc: async function (data, from_connid) {
         await SDPProcess(data, from_connid);
-      },
-      
+      },    
       closeConnectionCall: async function (connid) {
         await closeConnection(connid);
       },
@@ -485,10 +481,13 @@ var MyApp = (function () {
       );
       $(".participant-count").text(userNum);
     }
-
-   $(document).on("click",".people-heading",function(){
-     $(".chat-show-wrap").hide(300);
-     $(".in-call-wrap-up").show(300);
+    $(document).on("click", ".people-heading", function () {
+      $(".in-call-wrap-up").show(300);
+      $(".chat-show-wrap").hide(300);
+      $(this).addClass("active");
+      $(".chat-heading").removeClass("active");
+    });     
+    $(".in-call-wrap-up").show(300);
    })
    $(document).on("click",".people-heading",function(){
     $(".chat-show-wrap").hide(300);
