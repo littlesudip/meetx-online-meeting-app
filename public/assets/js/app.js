@@ -595,8 +595,26 @@ var MyApp = (function () {
           console.log("error");
         },
       });
-  
-
+      var attachFileArea = document.querySelector(".show-attach-file");
+    var attachFileName = $("#customFile").val().split("\\").pop();
+    var attachFilePath =
+      "public/attachment/" + meeting_id + "/" + attachFileName;
+    attachFileArea.innerHTML +=
+      "<div class='left-align' style='display:flex; align-items:center;'><img src='public/assets/images/other.jpg' style='height:40px;width:40px;' class='caller-image circle'><div style='font-weight:600;margin:0 5px;'>" +
+      user_id +
+      "</div>:<div><a style='color:#007bff;' href='" +
+      attachFilePath +
+      "' download>" +
+      attachFileName +
+      "</a></div></div><br/>";
+    $("label.custom-file-label").text("");
+    socket.emit("fileTransferToOther", {
+      username: user_id,
+      meetingid: meeting_id,
+      filePath: attachFilePath,
+      fileName: attachFileName,
+    });
+  });
     return {
     _init: function (uid, mid) {
       init(uid, mid);
