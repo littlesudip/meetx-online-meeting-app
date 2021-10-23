@@ -634,7 +634,29 @@ var MyApp = (function () {
       .text("Start Recording");
     mediaRecorder.stop();
   });
-
+  
+  var mediaRecorder;
+  var chunks = [];
+  async function captureScreen(
+    mediaContraints = {
+      video: true,
+    }
+  ) {
+    const screenStream = await navigator.mediaDevices.getDisplayMedia(
+      mediaContraints
+    );
+    return screenStream;
+  }
+  async function captureAudio(
+    mediaContraints = {
+      video: false,
+      audio: true,
+    }
+  ) {
+    const audioStream = await navigator.mediaDevices.getUserMedia(
+      mediaContraints
+    );
+    return audioStream;
     return {
     _init: function (uid, mid) {
       init(uid, mid);
