@@ -595,6 +595,7 @@ var MyApp = (function () {
           console.log("error");
         },
       });
+
       var attachFileArea = document.querySelector(".show-attach-file");
     var attachFileName = $("#customFile").val().split("\\").pop();
     var attachFilePath =
@@ -615,6 +616,25 @@ var MyApp = (function () {
       fileName: attachFileName,
     });
   });
+  $(document).on("click", ".option-icon", function () {
+    $(".recording-show").toggle(300);
+  });
+
+  $(document).on("click", ".start-record", function () {
+    $(this)
+      .removeClass()
+      .addClass("stop-record btn-danger text-dark")
+      .text("Stop Recording");
+    startRecording();
+  });
+  $(document).on("click", ".stop-record", function () {
+    $(this)
+      .removeClass()
+      .addClass("start-record btn-dark text-danger")
+      .text("Start Recording");
+    mediaRecorder.stop();
+  });
+
     return {
     _init: function (uid, mid) {
       init(uid, mid);
